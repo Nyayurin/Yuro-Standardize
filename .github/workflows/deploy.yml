@@ -15,6 +15,7 @@ jobs:
           java-package: 'jdk'
           architecture: 'x64'
           cache: 'gradle'
+      - run: chmod +x ./gradlew
       - run: ./gradlew :composeApp:wasmJsBrowserDistribution
       - uses: actions/upload-pages-artifact@v3
         with:
