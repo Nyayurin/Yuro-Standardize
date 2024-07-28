@@ -123,71 +123,86 @@ fun Theme(content: @Composable () -> Unit) {
         }
     }
     val maple = FontFamily(
-        Font(
+        /*Font(
             resource = Res.font.MapleMono_NF_CN_Bold,
             weight = FontWeight.Bold,
             style = FontStyle.Normal
-        ), Font(
+        ),
+        Font(
             resource = Res.font.MapleMono_NF_CN_BoldItalic,
             weight = FontWeight.Bold,
             style = FontStyle.Italic
-        ), Font(
+        ),
+        Font(
             resource = Res.font.MapleMono_NF_CN_ExtraBold,
             weight = FontWeight.ExtraBold,
             style = FontStyle.Normal
-        ), Font(
+        ),
+        Font(
             resource = Res.font.MapleMono_NF_CN_ExtraBoldItalic,
             weight = FontWeight.ExtraBold,
             style = FontStyle.Italic
-        ), Font(
+        ),
+        Font(
             resource = Res.font.MapleMono_NF_CN_ExtraLight,
             weight = FontWeight.ExtraLight,
             style = FontStyle.Normal
-        ), Font(
+        ),
+        Font(
             resource = Res.font.MapleMono_NF_CN_ExtraLightItalic,
             weight = FontWeight.ExtraLight,
             style = FontStyle.Italic
-        ), Font(
+        ),
+        Font(
             resource = Res.font.MapleMono_NF_CN_Italic,
             weight = FontWeight.Normal,
             style = FontStyle.Italic
-        ), Font(
+        ),
+        Font(
             resource = Res.font.MapleMono_NF_CN_Light,
             weight = FontWeight.Light,
             style = FontStyle.Normal
-        ), Font(
+        ),
+        Font(
             resource = Res.font.MapleMono_NF_CN_LightItalic,
             weight = FontWeight.Light,
             style = FontStyle.Italic
-        ), Font(
+        ),
+        Font(
             resource = Res.font.MapleMono_NF_CN_Medium,
             weight = FontWeight.Medium,
             style = FontStyle.Normal
-        ), Font(
+        ),
+        Font(
             resource = Res.font.MapleMono_NF_CN_MediumItalic,
             weight = FontWeight.Medium,
             style = FontStyle.Italic
-        ), Font(
+        ),*/
+        Font(
             resource = Res.font.MapleMono_NF_CN_Regular,
             weight = FontWeight.Normal,
             style = FontStyle.Normal
-        ), Font(
+        ),
+        /*Font(
             resource = Res.font.MapleMono_NF_CN_SemiBold,
             weight = FontWeight.SemiBold,
             style = FontStyle.Normal
-        ), Font(
+        ),
+        Font(
             resource = Res.font.MapleMono_NF_CN_SemiBoldItalic,
             weight = FontWeight.SemiBold,
             style = FontStyle.Italic
-        ), Font(
+        ),
+        Font(
             resource = Res.font.MapleMono_NF_CN_Thin,
             weight = FontWeight.Thin,
             style = FontStyle.Normal
-        ), Font(
+        ),
+        Font(
             resource = Res.font.MapleMono_NF_CN_ThinItalic,
             weight = FontWeight.Thin,
             style = FontStyle.Italic
-        )
+        )*/
     )
     val typography = Typography(
         MaterialTheme.typography.displayLarge.copy(fontFamily = maple),
@@ -214,7 +229,10 @@ fun Theme(content: @Composable () -> Unit) {
         secondary = animateColorAsState(color.secondary, TweenSpec(600)).value,
         onSecondary = animateColorAsState(color.onSecondary, TweenSpec(600)).value,
         secondaryContainer = animateColorAsState(color.secondaryContainer, TweenSpec(600)).value,
-        onSecondaryContainer = animateColorAsState(color.onSecondaryContainer, TweenSpec(600)).value,
+        onSecondaryContainer = animateColorAsState(
+            color.onSecondaryContainer,
+            TweenSpec(600)
+        ).value,
         tertiary = animateColorAsState(color.tertiary, TweenSpec(600)).value,
         onTertiary = animateColorAsState(color.onTertiary, TweenSpec(600)).value,
         tertiaryContainer = animateColorAsState(color.tertiaryContainer, TweenSpec(600)).value,
@@ -237,11 +255,20 @@ fun Theme(content: @Composable () -> Unit) {
         inversePrimary = animateColorAsState(color.inversePrimary, TweenSpec(600)).value,
         surfaceDim = animateColorAsState(color.surfaceDim, TweenSpec(600)).value,
         surfaceBright = animateColorAsState(color.surfaceBright, TweenSpec(600)).value,
-        surfaceContainerLowest = animateColorAsState(color.surfaceContainerLowest, TweenSpec(600)).value,
+        surfaceContainerLowest = animateColorAsState(
+            color.surfaceContainerLowest,
+            TweenSpec(600)
+        ).value,
         surfaceContainerLow = animateColorAsState(color.surfaceContainerLow, TweenSpec(600)).value,
         surfaceContainer = animateColorAsState(color.surfaceContainer, TweenSpec(600)).value,
-        surfaceContainerHigh = animateColorAsState(color.surfaceContainerHigh, TweenSpec(600)).value,
-        surfaceContainerHighest = animateColorAsState(color.surfaceContainerHighest, TweenSpec(600)).value,
+        surfaceContainerHigh = animateColorAsState(
+            color.surfaceContainerHigh,
+            TweenSpec(600)
+        ).value,
+        surfaceContainerHighest = animateColorAsState(
+            color.surfaceContainerHighest,
+            TweenSpec(600)
+        ).value,
         surfaceTint = animateColorAsState(color.surfaceTint, TweenSpec(600)).value
     )
     MaterialTheme(colorScheme = colorScheme, typography = typography, content = content)
