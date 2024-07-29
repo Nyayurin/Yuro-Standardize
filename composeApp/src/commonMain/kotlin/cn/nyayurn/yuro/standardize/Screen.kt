@@ -1,9 +1,10 @@
 package cn.nyayurn.yuro.standardize
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.AnimationVector
 import androidx.compose.animation.core.AnimationVector1D
+import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.core.TwoWayConverter
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -79,22 +80,47 @@ object DocumentScreen : Screen {
                 )
             }
             var page by rememberSaveable { mutableStateOf(DocumentPage.Introduction) }
-            when (screenSize) {
-                ScreenSize.Compact, ScreenSize.Medium -> {
-                    val drawerState = rememberDrawerState(DrawerValue.Closed)
-                    val scope = rememberCoroutineScope()
-                    ModalNavigationDrawer(
-                        drawerState = drawerState,
-                        drawerContent = {
-                            ModalDrawerSheet {
-                                SideNavigation(
-                                    page = page,
-                                    onChange = { page = it }
-                                )
-                            }
-                        }
-                    ) {
-                        Column {
+            val drawerState = rememberDrawerState(DrawerValue.Closed)
+            val scope = rememberCoroutineScope()
+            ModalNavigationDrawer(
+                drawerState = drawerState,
+                drawerContent = {
+                    ModalDrawerSheet {
+                        SideNavigation(
+                            page = page,
+                            onChange = { page = it },
+                            modifier = Modifier.width(300.dp)
+                        )
+                    }
+                }
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(
+                        animateDpAsState(
+                            when (screenSize) {
+                                ScreenSize.Expanded -> 32.dp
+                                else -> 0.dp
+                            },
+                            TweenSpec(600)
+                        ).value
+                    ),
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    SideNavigation(
+                        page = page,
+                        onChange = { page = it },
+                        modifier = Modifier.width(
+                            animateDpAsState(
+                                when (screenSize) {
+                                    ScreenSize.Expanded -> 300.dp
+                                    else -> 0.dp
+                                },
+                                TweenSpec(600)
+                            ).value
+                        )
+                    )
+                    Column {
+                        if (screenSize != ScreenSize.Expanded) {
                             IconButton(
                                 onClick = {
                                     scope.launch {
@@ -107,23 +133,7 @@ object DocumentScreen : Screen {
                                     contentDescription = null
                                 )
                             }
-                            Body(
-                                screenSize = screenSize,
-                                page = page
-                            )
                         }
-                    }
-                }
-
-                ScreenSize.Expanded -> {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(32.dp),
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        SideNavigation(
-                            page = page,
-                            onChange = { page = it }
-                        )
                         Body(
                             screenSize = screenSize,
                             page = page

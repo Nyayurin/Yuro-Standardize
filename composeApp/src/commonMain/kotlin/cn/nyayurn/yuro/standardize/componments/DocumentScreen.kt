@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
@@ -55,12 +54,13 @@ import yuro_standardize.composeapp.generated.resources.translate
 @Composable
 fun SideNavigation(
     page: DocumentPage,
-    onChange: (DocumentPage) -> Unit
+    onChange: (DocumentPage) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Surface(
         shape = RoundedCornerShape(topEnd = 32.dp, bottomEnd = 32.dp),
         color = MaterialTheme.colorScheme.surfaceVariant,
-        modifier = Modifier.fillMaxHeight().width(300.dp)
+        modifier = modifier.fillMaxHeight()
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(64.dp),
