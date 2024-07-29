@@ -6,7 +6,7 @@ import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.core.TwoWayConverter
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,37 +29,31 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import cn.nyayurn.yuro.standardize.componments.Body
 import cn.nyayurn.yuro.standardize.componments.Description
 import cn.nyayurn.yuro.standardize.componments.SideNavigation
 import cn.nyayurn.yuro.standardize.componments.Start
 import cn.nyayurn.yuro.standardize.componments.Title
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 object HomeScreen : Screen {
     @Composable
     override fun Content() {
-        BoxWithConstraints(
+        Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier.fillMaxSize().padding(32.dp)
         ) {
-            val screenSize by remember(maxWidth) {
-                mutableStateOf(
-                    when {
-                        maxWidth < 600.dp -> ScreenSize.Compact
-                        maxWidth < 840.dp -> ScreenSize.Medium
-                        else -> ScreenSize.Expanded
-                    }
-                )
-            }
             Column(
                 verticalArrangement = Arrangement.spacedBy(32.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Title(screenSize = screenSize)
-                Description(screenSize = screenSize)
+                Title()
+                Description()
                 Start()
             }
         }
@@ -69,76 +63,71 @@ object HomeScreen : Screen {
 object DocumentScreen : Screen {
     @Composable
     override fun Content() {
-        BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
-            val screenSize by remember(maxWidth) {
-                mutableStateOf(
-                    when {
-                        maxWidth < 600.dp -> ScreenSize.Compact
-                        maxWidth < 840.dp -> ScreenSize.Medium
-                        else -> ScreenSize.Expanded
-                    }
-                )
-            }
-            var page by rememberSaveable { mutableStateOf(DocumentPage.Introduction) }
-            val drawerState = rememberDrawerState(DrawerValue.Closed)
-            val scope = rememberCoroutineScope()
-            ModalNavigationDrawer(
-                drawerState = drawerState,
-                drawerContent = {
-                    ModalDrawerSheet {
-                        SideNavigation(
-                            page = page,
-                            onChange = { page = it },
-                            modifier = Modifier.width(300.dp)
-                        )
-                    }
+        var page by rememberSaveable { mutableStateOf(DocumentPage.Introduction) }
+        val drawerState = rememberDrawerState(DrawerValue.Closed)
+        val scope = rememberCoroutineScope()
+        val (width, _) = viewModel<YuroViewModel>().screen.size
+        remember(width) {
+            if (width == ScreenSize.Expanded && drawerState.isOpen) {
+                scope.launch {
+                    delay(600)
+                    drawerState.close()
                 }
+            }
+        }
+        ModalNavigationDrawer(
+            drawerState = drawerState,
+            drawerContent = {
+                ModalDrawerSheet(drawerContainerColor = Color.Transparent) {
+                    SideNavigation(
+                        page = page,
+                        onChange = { page = it },
+                        modifier = Modifier.width(300.dp)
+                    )
+                }
+            }
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(
+                    animateDpAsState(
+                        when (width) {
+                            ScreenSize.Expanded -> 32.dp
+                            else -> 0.dp
+                        },
+                        TweenSpec(600)
+                    ).value
+                ),
+                modifier = Modifier.fillMaxSize()
             ) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(
+                SideNavigation(
+                    page = page,
+                    onChange = { page = it },
+                    modifier = Modifier.width(
                         animateDpAsState(
-                            when (screenSize) {
-                                ScreenSize.Expanded -> 32.dp
+                            when (width) {
+                                ScreenSize.Expanded -> 300.dp
                                 else -> 0.dp
                             },
                             TweenSpec(600)
                         ).value
-                    ),
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    SideNavigation(
-                        page = page,
-                        onChange = { page = it },
-                        modifier = Modifier.width(
-                            animateDpAsState(
-                                when (screenSize) {
-                                    ScreenSize.Expanded -> 300.dp
-                                    else -> 0.dp
-                                },
-                                TweenSpec(600)
-                            ).value
-                        )
                     )
-                    Column {
-                        if (screenSize != ScreenSize.Expanded) {
-                            IconButton(
-                                onClick = {
-                                    scope.launch {
-                                        drawerState.open()
-                                    }
+                )
+                Column {
+                    if (width != ScreenSize.Expanded) {
+                        IconButton(
+                            onClick = {
+                                scope.launch {
+                                    drawerState.open()
                                 }
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Menu,
-                                    contentDescription = null
-                                )
                             }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Menu,
+                                contentDescription = null
+                            )
                         }
-                        Body(
-                            screenSize = screenSize,
-                            page = page
-                        )
                     }
+                    Body(page = page)
                 }
             }
         }

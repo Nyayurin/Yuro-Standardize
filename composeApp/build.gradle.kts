@@ -52,6 +52,7 @@ kotlin {
             implementation(libs.voyager.navigator)
             implementation(libs.voyager.transitions)
             implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.lifecycle.viewmodel.compose)
         }
 
         commonTest.dependencies {

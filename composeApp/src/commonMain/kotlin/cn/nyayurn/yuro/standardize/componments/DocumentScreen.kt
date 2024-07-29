@@ -1,6 +1,7 @@
 package cn.nyayurn.yuro.standardize.componments
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -39,10 +40,12 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withAnnotation
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import cn.nyayurn.yuro.standardize.DocumentPage
 import cn.nyayurn.yuro.standardize.ScreenSize
+import cn.nyayurn.yuro.standardize.YuroViewModel
 import cn.nyayurn.yuro.standardize.theme.darkTheme
 import org.jetbrains.compose.resources.painterResource
 import yuro_standardize.composeapp.generated.resources.Res
@@ -55,29 +58,46 @@ import yuro_standardize.composeapp.generated.resources.translate
 fun SideNavigation(
     page: DocumentPage,
     onChange: (DocumentPage) -> Unit,
+    viewModel: YuroViewModel = viewModel(),
     modifier: Modifier = Modifier
 ) {
+    val (_, height) = viewModel.screen.size
     Surface(
         shape = RoundedCornerShape(topEnd = 32.dp, bottomEnd = 32.dp),
         color = MaterialTheme.colorScheme.surfaceVariant,
         modifier = modifier.fillMaxHeight()
     ) {
         Column(
-            verticalArrangement = Arrangement.spacedBy(64.dp),
-            modifier = Modifier.fillMaxHeight().padding(32.dp)
+            verticalArrangement = Arrangement.spacedBy(
+                animateDpAsState(
+                    when (height) {
+                        ScreenSize.Compact -> 16.dp
+                        ScreenSize.Medium -> 32.dp
+                        ScreenSize.Expanded -> 64.dp
+                    },
+                    TweenSpec(600)
+                ).value
+            ),
+            modifier = Modifier.fillMaxHeight().padding(
+                animateDpAsState(
+                    when (height) {
+                        ScreenSize.Compact -> 8.dp
+                        ScreenSize.Medium -> 16.dp
+                        ScreenSize.Expanded -> 32.dp
+                    },
+                    TweenSpec(600)
+                ).value
+            )
         ) {
             val navigator = LocalNavigator.currentOrThrow
-            TextButton(
-                onClick = { navigator.popUntilRoot() },
-                modifier = Modifier.weight(0.1F)
-            ) {
+            TextButton(onClick = { navigator.popUntilRoot() }) {
                 Text(
                     text = "Yuro",
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     style = MaterialTheme.typography.headlineLarge
                 )
             }
-            PageList(page = page, onChange = onChange, modifier = Modifier.weight(0.8F))
+            PageList(page = page, onChange = onChange, modifier = Modifier.weight(0.9F))
             BottomBar(modifier = Modifier.weight(0.1F))
         }
     }
@@ -210,14 +230,23 @@ fun BottomBar(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun Body(screenSize: ScreenSize, page: DocumentPage, modifier: Modifier = Modifier) {
+fun Body(
+    page: DocumentPage,
+    viewModel: YuroViewModel = viewModel(),
+    modifier: Modifier = Modifier
+) {
+    val (width, _) = viewModel.screen.size
     AnimatedContent(
         targetState = page,
-        modifier = modifier.padding(animateDpAsState(when (screenSize) {
-            ScreenSize.Compact -> 16.dp
-            ScreenSize.Medium -> 32.dp
-            ScreenSize.Expanded -> 64.dp
-        }).value)
+        modifier = modifier.padding(
+            animateDpAsState(
+                when (width) {
+                    ScreenSize.Compact -> 16.dp
+                    ScreenSize.Medium -> 32.dp
+                    ScreenSize.Expanded -> 64.dp
+                }
+            ).value
+        )
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(16.dp),

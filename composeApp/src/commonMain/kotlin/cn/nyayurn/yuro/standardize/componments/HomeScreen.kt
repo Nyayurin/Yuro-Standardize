@@ -9,36 +9,43 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import cn.nyayurn.yuro.standardize.DocumentScreen
 import cn.nyayurn.yuro.standardize.ScreenSize
+import cn.nyayurn.yuro.standardize.YuroViewModel
 import cn.nyayurn.yuro.standardize.stringLengthConverter
 
 @Composable
-fun Title(screenSize: ScreenSize) {
+fun Title(viewModel: YuroViewModel = viewModel(), modifier: Modifier = Modifier) {
+    val (width, _) = viewModel.screen.size
     Text(
         text = animateValueAsState(
-            targetValue = when (screenSize) {
+            targetValue = when (width) {
                 ScreenSize.Compact -> "Yuro"
                 else -> "Yuro Standardize"
             },
             typeConverter = remember { stringLengthConverter("Yuro Standardize") },
             animationSpec = remember { TweenSpec(durationMillis = 600) }
         ).value,
-        style = MaterialTheme.typography.displayLarge
+        style = MaterialTheme.typography.displayLarge,
+        modifier = modifier
     )
 }
 
 @Composable
-fun Description(screenSize: ScreenSize) {
-    AnimatedContent(screenSize) {
+fun Description(viewModel: YuroViewModel = viewModel(), modifier: Modifier = Modifier) {
+    val (width, _) = viewModel.screen.size
+    AnimatedContent(width) {
         Text(
             text = "THE UNIVERSAL MESSENGER STANDARDIZE",
             style = MaterialTheme.typography.bodyLarge,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            modifier = modifier
         )
     }
 }
