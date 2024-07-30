@@ -4,7 +4,6 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -16,14 +15,19 @@ import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.PlainTooltip
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TooltipBox
+import androidx.compose.material3.TooltipDefaults
+import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -54,6 +58,7 @@ import yuro_standardize.composeapp.generated.resources.github
 import yuro_standardize.composeapp.generated.resources.light_mode_24px
 import yuro_standardize.composeapp.generated.resources.translate
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SideNavigation(
     page: DocumentPage,
@@ -90,12 +95,22 @@ fun SideNavigation(
             )
         ) {
             val navigator = LocalNavigator.currentOrThrow
-            TextButton(onClick = { navigator.popUntilRoot() }) {
-                Text(
-                    text = "Yuro",
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    style = MaterialTheme.typography.headlineLarge
-                )
+            TooltipBox(
+                positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
+                tooltip = {
+                    PlainTooltip {
+                        Text(text = "返回主页")
+                    }
+                },
+                state = rememberTooltipState()
+            ) {
+                TextButton(onClick = { navigator.popUntilRoot() }) {
+                    Text(
+                        text = "Yuro",
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = MaterialTheme.typography.headlineLarge
+                    )
+                }
             }
             PageList(page = page, onChange = onChange, modifier = Modifier.weight(0.9F))
             BottomBar(modifier = Modifier.weight(0.1F))
@@ -173,13 +188,23 @@ fun PageList(page: DocumentPage, onChange: (DocumentPage) -> Unit, modifier: Mod
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BottomBar(modifier: Modifier = Modifier) {
+    val uriHandler = LocalUriHandler.current
     Row(
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         modifier = modifier
     ) {
-        Box {
+        TooltipBox(
+            positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
+            tooltip = {
+                PlainTooltip {
+                    Text(text = "语言")
+                }
+            },
+            state = rememberTooltipState()
+        ) {
             var expanded by remember { mutableStateOf(false) }
             IconButton(
                 onClick = { expanded = true }
@@ -203,28 +228,52 @@ fun BottomBar(modifier: Modifier = Modifier) {
                 )
             }
         }
-        Switch(
-            checked = darkTheme,
-            onCheckedChange = { darkTheme = it },
-            thumbContent = {
-                when {
-                    darkTheme -> Icon(
-                        painter = painterResource(Res.drawable.dark_mode_24px),
-                        contentDescription = null
-                    )
-
-                    else -> Icon(
-                        painter = painterResource(Res.drawable.light_mode_24px),
-                        contentDescription = null
-                    )
+        TooltipBox(
+            positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
+            tooltip = {
+                PlainTooltip {
+                    Text(text = "深色主题")
                 }
-            }
-        )
-        IconButton(onClick = {}) {
-            Icon(
-                painter = painterResource(Res.drawable.github),
-                contentDescription = null
+            },
+            state = rememberTooltipState()
+        ) {
+            Switch(
+                checked = darkTheme,
+                onCheckedChange = { darkTheme = it },
+                thumbContent = {
+                    when {
+                        darkTheme -> Icon(
+                            painter = painterResource(Res.drawable.dark_mode_24px),
+                            contentDescription = null
+                        )
+
+                        else -> Icon(
+                            painter = painterResource(Res.drawable.light_mode_24px),
+                            contentDescription = null
+                        )
+                    }
+                }
             )
+        }
+        TooltipBox(
+            positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
+            tooltip = {
+                PlainTooltip {
+                    Text(text = "Github")
+                }
+            },
+            state = rememberTooltipState()
+        ) {
+            IconButton(
+                onClick = {
+                    uriHandler.openUri("https://github.com/Nyayurn/Yuro-Standardize")
+                }
+            ) {
+                Icon(
+                    painter = painterResource(Res.drawable.github),
+                    contentDescription = null
+                )
+            }
         }
     }
 }
