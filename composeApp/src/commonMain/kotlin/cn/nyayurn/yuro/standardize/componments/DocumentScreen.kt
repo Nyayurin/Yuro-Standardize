@@ -339,7 +339,20 @@ fun Introduction() {
                 }
                 appendLine(", 下文中\"她\"指代 Yuro")
                 appendLine("Yuro 具有极强的扩展性, 所以她不会直接提供任何 API, 只使用一套设计规范来统一扩展 API 的风格, 降低用户开发时迁移协议的成本")
-                appendLine("Yuro 在面对多个协议时并未只有每个协议单独写一套代码的方式, 开发者可以采用将其他协议转至 Yuri 再统一开发 Yuri 程序的方式实现代码复用")
+                append("Yuro 在面对多个协议时并未只有每个协议单独写一套代码的方式, 开发者可以使用 ")
+                withAnnotation(
+                    UrlAnnotation("https://nyayurn.github.io/Yuri-Protocol/")
+                ) {
+                    withStyle(
+                        SpanStyle(
+                            color = Color(51, 102, 204),
+                            textDecoration = TextDecoration.Underline
+                        )
+                    ) {
+                        append("Yuri")
+                    }
+                }
+                appendLine(" 实现代码复用")
                 withStyle(
                     SpanStyle(
                         textDecoration = TextDecoration.LineThrough
