@@ -297,17 +297,19 @@ fun Body(
             ).value
         )
     ) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier.verticalScroll(rememberScrollState())
-        ) {
-            when (it) {
-                DocumentPage.Introduction -> Introduction()
-                DocumentPage.Overview -> Overview()
-                DocumentPage.Action -> Action()
-                DocumentPage.Event -> Event()
-                DocumentPage.Encoding -> Encoding()
-                DocumentPage.Element -> Element()
+        SelectionContainer {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier.verticalScroll(rememberScrollState())
+            ) {
+                when (it) {
+                    DocumentPage.Introduction -> Introduction()
+                    DocumentPage.Overview -> Overview()
+                    DocumentPage.Action -> Action()
+                    DocumentPage.Event -> Event()
+                    DocumentPage.Encoding -> Encoding()
+                    DocumentPage.Element -> Element()
+                }
             }
         }
     }
@@ -320,76 +322,101 @@ fun Introduction() {
         text = "介绍",
         style = MaterialTheme.typography.titleLarge
     )
-    SelectionContainer {
-        val text = buildAnnotatedString {
-            withStyle(SpanStyle(color = MaterialTheme.colorScheme.onBackground)) {
-                appendLine("Yuro 是一个通用的聊天规范, 目的是抹除不同聊天协议在使用 Kotlin 开发时因为框架不同造成的多余学习成本, 让开发者以更低的成本开发出跨平台, 可扩展的聊天应用")
-                append("Yuro 的名称来源于游戏喵可莉的兔玩偶和咸鱼喵喵中的角色 ")
-                withAnnotation(
-                    UrlAnnotation("https://nyakoris-rabbit-doll.fandom.com/zh/wiki/%E8%8E%89%E7%8F%91")
-                ) {
-                    withStyle(
-                        SpanStyle(
-                            color = Color(51, 102, 204),
-                            textDecoration = TextDecoration.Underline
-                        )
-                    ) {
-                        append("莉珑(Yuro)")
-                    }
-                }
-                appendLine(", 下文中\"她\"指代 Yuro")
-                appendLine("Yuro 具有极强的扩展性, 所以她不会直接提供任何 API, 只使用一套设计规范来统一扩展 API 的风格, 降低用户开发时迁移协议的成本")
-                append("Yuro 在面对多个协议时并未只有每个协议单独写一套代码的方式, 开发者可以使用 ")
-                withAnnotation(
-                    UrlAnnotation("https://nyayurn.github.io/Yuri-Protocol/")
-                ) {
-                    withStyle(
-                        SpanStyle(
-                            color = Color(51, 102, 204),
-                            textDecoration = TextDecoration.Underline
-                        )
-                    ) {
-                        append("Yuri")
-                    }
-                }
-                appendLine(" 实现代码复用")
+    val text = buildAnnotatedString {
+        withStyle(SpanStyle(color = MaterialTheme.colorScheme.onBackground)) {
+            appendLine("Yuro 是一个通用的聊天规范, 目的是抹除不同聊天协议在使用 Kotlin 开发时因为框架不同造成的多余学习成本, 让开发者以更低的成本开发出跨平台, 可扩展的聊天应用")
+            append("Yuro 的名称来源于游戏喵可莉的兔玩偶和咸鱼喵喵中的角色 ")
+            withAnnotation(
+                UrlAnnotation("https://nyakoris-rabbit-doll.fandom.com/zh/wiki/%E8%8E%89%E7%8F%91")
+            ) {
                 withStyle(
                     SpanStyle(
-                        textDecoration = TextDecoration.LineThrough
+                        color = Color(51, 102, 204),
+                        textDecoration = TextDecoration.Underline
                     )
                 ) {
-                    appendLine("Yuro 的开发者很少从事聊天机器人开发, 不熟悉各种聊天平台的通信方式. 经过长达 1 天的发展, Yuro 有了健全的大饼和还没新建项目的实现. 目前, Yuro 官方提供了不到 1 个聊天平台的适配器, 完全绕过了世界上主流的聊天平台!")
+                    append("莉珑(Yuro)")
                 }
             }
-        }
-        val uriHandler = LocalUriHandler.current
-        ClickableText(
-            text = text,
-            style = MaterialTheme.typography.bodyLarge
-        ) { offset ->
-            text.getUrlAnnotations(offset, offset).firstOrNull { annotation ->
-                uriHandler.openUri(annotation.item.url)
-                true
+            appendLine(", 下文中\"她\"指代 Yuro")
+            appendLine("Yuro 具有极强的扩展性, 所以她不会直接提供任何 API, 只使用一套设计规范来统一扩展 API 的风格, 降低用户开发时迁移协议的成本")
+            append("Yuro 在面对多个协议时并未只有每个协议单独写一套代码的方式, 开发者可以使用 ")
+            withAnnotation(
+                UrlAnnotation("https://nyayurn.github.io/Yuri-Protocol/")
+            ) {
+                withStyle(
+                    SpanStyle(
+                        color = Color(51, 102, 204),
+                        textDecoration = TextDecoration.Underline
+                    )
+                ) {
+                    append("Yuri")
+                }
             }
+            appendLine(" 实现代码复用")
+            withStyle(
+                SpanStyle(
+                    textDecoration = TextDecoration.LineThrough
+                )
+            ) {
+                appendLine("Yuro 的开发者很少从事聊天机器人开发, 不熟悉各种聊天平台的通信方式. 经过长达 1 天的发展, Yuro 有了健全的大饼和还没新建项目的实现. 目前, Yuro 官方提供了不到 1 个聊天平台的适配器, 完全绕过了世界上主流的聊天平台!")
+            }
+        }
+    }
+    val uriHandler = LocalUriHandler.current
+    ClickableText(
+        text = text,
+        style = MaterialTheme.typography.bodyLarge
+    ) { offset ->
+        text.getUrlAnnotations(offset, offset).firstOrNull { annotation ->
+            uriHandler.openUri(annotation.item.url)
+            true
         }
     }
 }
 
+@OptIn(ExperimentalTextApi::class)
 @Composable
 fun Overview() {
     Text(
         text = "总览",
         style = MaterialTheme.typography.titleLarge
     )
-    SelectionContainer {
-        Text(
-            text = buildString {
-                appendLine("Yuro 的通信分为两块:")
-                appendLine("事件动作(Event Action): 一套使用 HTTP 的 API 服务, 用于发送事件")
-                append("事件流(Event Stream): 一个使用 ServerSendEvent/WebSocket/WebHook 的消息下发服务, 用于持续接收事件")
-            },
-            style = MaterialTheme.typography.bodyLarge
-        )
+    Text(
+        text = buildString {
+            appendLine("Yuro 的通信分为两块:")
+            appendLine("事件动作(Event Action): 一套使用 HTTP 的 API 服务, 用于发送事件")
+            append("事件流(Event Stream): 一个使用 ServerSendEvent/WebSocket/WebHook 的消息下发服务, 用于持续接收事件")
+        },
+        style = MaterialTheme.typography.bodyLarge
+    )
+    val text = buildAnnotatedString {
+        withStyle(SpanStyle(color = MaterialTheme.colorScheme.onBackground)) {
+            append("Yuro 使用 ")
+            withAnnotation(
+                UrlAnnotation("https://github.com/apple/pkl")
+            ) {
+                withStyle(
+                    SpanStyle(
+                        color = Color(51, 102, 204),
+                        textDecoration = TextDecoration.Underline
+                    )
+                ) {
+                    append("Pickle")
+                }
+            }
+            append(" 作为数据传输语言, 它同时拥有 JSON 的可读性和 XML 的结构性")
+        }
+    }
+    val uriHandler = LocalUriHandler.current
+    ClickableText(
+        text = text,
+        style = MaterialTheme.typography.bodyLarge,
+    ) { offset ->
+        text.getUrlAnnotations(offset, offset).firstOrNull { annotation ->
+            uriHandler.openUri(annotation.item.url)
+            true
+        }
     }
     HorizontalDivider()
     Text(
