@@ -1,6 +1,5 @@
 package cn.nyayurn.yuro.standardize.componments
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.core.animateValueAsState
 import androidx.compose.material3.ButtonDefaults
@@ -21,7 +20,8 @@ import cn.nyayurn.yuro.standardize.YuroViewModel
 import cn.nyayurn.yuro.standardize.stringLengthConverter
 
 @Composable
-fun Title(viewModel: YuroViewModel = viewModel(), modifier: Modifier = Modifier) {
+fun Title(modifier: Modifier = Modifier) {
+    val viewModel = viewModel<YuroViewModel>()
     val (width, _) = viewModel.screen.size
     Text(
         text = animateValueAsState(
@@ -38,16 +38,13 @@ fun Title(viewModel: YuroViewModel = viewModel(), modifier: Modifier = Modifier)
 }
 
 @Composable
-fun Description(viewModel: YuroViewModel = viewModel(), modifier: Modifier = Modifier) {
-    val (width, _) = viewModel.screen.size
-    AnimatedContent(width) {
-        Text(
-            text = "THE UNIVERSAL MESSENGER STANDARDIZE",
-            style = MaterialTheme.typography.bodyLarge,
-            textAlign = TextAlign.Center,
-            modifier = modifier
-        )
-    }
+fun Description(modifier: Modifier = Modifier) {
+    Text(
+        text = "THE UNIVERSAL MESSENGER STANDARDIZE",
+        style = MaterialTheme.typography.bodyLarge,
+        textAlign = TextAlign.Center,
+        modifier = modifier
+    )
 }
 
 @Composable

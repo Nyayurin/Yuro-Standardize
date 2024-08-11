@@ -22,13 +22,13 @@ import cn.nyayurn.yuro.standardize.theme.Theme
 internal fun App() {
     Theme {
         BoxWithConstraints {
-            val viewModel = viewModel { YuroViewModel() }
+            val viewModel = viewModel<YuroViewModel>()
             remember(maxWidth, maxHeight) { viewModel.screen = Screen(maxWidth, maxHeight) }
             Surface(
                 color = MaterialTheme.colorScheme.background,
                 modifier = Modifier.fillMaxSize()
             ) {
-                Navigator(HomeScreen) { navigator ->
+                Navigator(LoadingScreen) { navigator ->
                     FadeTransition(navigator)
                 }
             }
@@ -37,7 +37,9 @@ internal fun App() {
 }
 
 class YuroViewModel : ViewModel() {
-    var screen: Screen by mutableStateOf(Screen(0.dp, 0.dp))
+    var screen by mutableStateOf(Screen(0.dp, 0.dp))
+    var darkMode by mutableStateOf(false)
+    var fontLoaded by mutableStateOf(false)
 }
 
 data class Screen(val width: Dp, val height: Dp) {
